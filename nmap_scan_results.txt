@@ -1,0 +1,106 @@
+====================================================
+NMAP SCAN RESULTS — Task 1: Basic Network Scanning
+Target: 127.0.0.1 (localhost / own machine — Windows 11)
+Date: 2026-07-17
+Nmap version: 7.99
+====================================================
+
+----------------------------------------------------
+SCAN 1: Basic scan
+Command: nmap 127.0.0.1
+----------------------------------------------------
+C:\Users\91885>nmap 127.0.0.1
+Starting Nmap 7.99 ( https://nmap.org ) at 2026-07-17 09:50 +0530
+Nmap scan report for localhost (127.0.0.1)
+Host is up (0.00037s latency).
+Not shown: 997 closed tcp ports (reset)
+PORT     STATE SERVICE
+135/tcp  open  msrpc
+445/tcp  open  microsoft-ds
+3306/tcp open  mysql
+
+Nmap done: 1 IP address (1 host up) scanned in 0.46 seconds
+
+
+----------------------------------------------------
+SCAN 2: Service version scan
+Command: nmap -sV 127.0.0.1
+----------------------------------------------------
+C:\Users\91885>nmap -sV 127.0.0.1
+Starting Nmap 7.99 ( https://nmap.org ) at 2026-07-17 09:50 +0530
+Nmap scan report for localhost (127.0.0.1)
+Host is up (0.00039s latency).
+Not shown: 997 closed tcp ports (reset)
+PORT     STATE SERVICE      VERSION
+135/tcp  open  msrpc        Microsoft Windows RPC
+445/tcp  open  microsoft-ds?
+3306/tcp open  mysql        MySQL 5.0.41-community-nt
+Service Info: OS: Windows; CPE: cpe:/o:microsoft:windows
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 8.48 seconds
+
+
+----------------------------------------------------
+SCAN 3: OS detection scan
+Command: nmap -O 127.0.0.1
+----------------------------------------------------
+C:\Users\91885>nmap -O 127.0.0.1
+Starting Nmap 7.99 ( https://nmap.org ) at 2026-07-17 09:52 +0530
+Nmap scan report for localhost (127.0.0.1)
+Host is up (0.00064s latency).
+Not shown: 997 closed tcp ports (reset)
+PORT     STATE SERVICE
+135/tcp  open  msrpc
+445/tcp  open  microsoft-ds
+3306/tcp open  mysql
+Device type: general purpose
+Running: Microsoft Windows 11
+OS CPE: cpe:/o:microsoft:windows_11
+OS details: Microsoft Windows 11 24H2 - 25H2
+Network Distance: 0 hops
+
+OS detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 1.49 seconds
+
+
+----------------------------------------------------
+PORT-BY-PORT ANALYSIS
+----------------------------------------------------
+
+Port: 135/tcp
+Service: msrpc (Microsoft Windows RPC)
+What it does: Endpoint mapper for Windows Remote Procedure Call, used for
+inter-process and inter-service communication between Windows components.
+Security risk: Medium-High. Historically exploited by the Blaster worm
+(MS03-026). Should never be exposed to untrusted networks or the internet;
+safe only on localhost or a trusted LAN behind a firewall.
+
+Port: 445/tcp
+Service: microsoft-ds (SMB)
+What it does: Handles Windows file and printer sharing over the SMB
+protocol.
+Security risk: High. This is the exact port exploited by EternalBlue,
+which powered the 2017 WannaCry ransomware outbreak — one of the most
+damaging cyberattacks in history. Must never be exposed to the public
+internet.
+
+Port: 3306/tcp
+Service: MySQL 5.0.41-community-nt
+What it does: A local MySQL database server instance.
+Security risk: High. If ever exposed beyond localhost, this port would
+allow remote connection attempts and brute-force login attacks against the
+database. The detected version (5.0.41, released circa 2007) is also
+severely outdated and likely contains multiple unpatched CVEs — should be
+upgraded even if only used locally.
+
+----------------------------------------------------
+OVERALL CONCLUSION
+----------------------------------------------------
+All three services are currently bound to localhost only, which is safe.
+However, all three have documented histories of exploitation when exposed
+without proper firewall controls. Recommendation: keep Windows Firewall set
+to block inbound connections on these ports for any network profile other
+than "Private/Trusted," and upgrade the MySQL installation to a supported
+version.
+
